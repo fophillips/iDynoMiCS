@@ -240,7 +240,7 @@ public class Domain implements IsComputationDomain
 		// Note this wasn't previously done, but with self attachment we need to know where the boundary layer is before any agents
 		// are added. The function below was part of the refreshBioFilmGrids method - this now exists independently and is called whenever 
 		// these grids need to be refreshed
-		calculateComputationDomainGrids();
+		//calculateComputationDomainGrids();
 		
 		// Now we can initialise the top of the boundary layer
 		this.calculateTopOfBoundaryLayer();
