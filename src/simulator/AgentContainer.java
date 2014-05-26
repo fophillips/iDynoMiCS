@@ -972,13 +972,7 @@ public class AgentContainer
 
 
 		/* Build a grid of biomass concentration */
-
-		// Set existing grid to zero
-		for (int iSpecies = 0; iSpecies < aSim.speciesList.size(); iSpecies++)
-			speciesGrid[iSpecies].setAllValueAt(0);
-
-		// Sum biomass concentrations
-        fitSpeciesMassOnGrids();
+        fitSpeciesMassOnGrids(aSim);
 
 		// now output the biomass values
 		for (int iSpecies = 0; iSpecies < aSim.speciesList.size(); iSpecies++) 
@@ -987,8 +981,12 @@ public class AgentContainer
 		}
 	}
 
-    public void fitSpeciesMassOnGrids()
+    public void fitSpeciesMassOnGrids(Simulator aSim)
     {
+        for (int iSpecies = 0; iSpecies < aSim.speciesList.size(); iSpecies++)
+        {
+            speciesGrid[iSpecies].setAllValueAt(0);
+        }
         for (SpecialisedAgent anA : agentList)
         {
             if (anA instanceof LocatedAgent)
