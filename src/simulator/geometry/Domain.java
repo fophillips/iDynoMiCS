@@ -467,7 +467,7 @@ public class Domain implements IsComputationDomain
 	 */
 	public void calculateComputationDomainGrids()
 	{
-        currentSim.agentGrid.fitSpeciesMassOnGrids();
+        currentSim.agentGrid.fitSpeciesMassOnGrids(currentSim);
 		for (int i = 1; i<_nI+1; i++) 
 		{
 			for (int j = 1; j<_nJ+1; j++) 
