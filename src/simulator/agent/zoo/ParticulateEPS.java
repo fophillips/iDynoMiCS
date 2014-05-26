@@ -382,5 +382,10 @@ public class ParticulateEPS extends LocatedAgent {
 		
 	//}
 
-
+    @Override
+    public double move()
+    {
+        _movement.reset();
+        return 0.0;
+    }
 }
