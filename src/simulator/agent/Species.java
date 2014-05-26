@@ -124,6 +124,11 @@ public class Species implements Serializable
 	 */
 	protected int              _population      = 0;
 
+    /**
+     * The relative diffusivity of this species
+     */
+    public double              diffusivity;
+
 	/**
 	 * \brief Creates a species object from that specified in the XML protocol file
 	 * 
@@ -158,6 +163,8 @@ public class Species implements Serializable
 		injectionOnAttachmentFrequency = aSpRoot.getParamDbl("injectionOnAttachmentFrequency");
 		cellInjectionEndHour = aSpRoot.getParamDbl("cellInjectionEndHour");
 		injectionOffAttachmentFrequency = aSpRoot.getParamDbl("injectionOffAttachmentFrequency");
+
+        diffusivity = aSpRoot.getParamDbl("diffusivity");
 
 		// Create the progenitor and tune its speciesParam object
 		_progenitor = (SpecialisedAgent) aSpRoot.instanceCreator("simulator.agent.zoo");

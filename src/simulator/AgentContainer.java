@@ -21,8 +21,6 @@ import simulator.diffusionSolver.Solver_pressure;
 
 import simulator.geometry.*;
 import simulator.geometry.boundaryConditions.AllBC;
-import simulator.reaction.Reaction;
-import simulator.SpatialGrid;
 
 import utils.ResultFile;
 import utils.XMLParser;
@@ -70,7 +68,7 @@ public class AgentContainer
 	/**
 	 * Array of SpatialGrids - one for each species in the simulation
 	 */ 
-	private SpatialGrid[] _speciesGrid;
+	public SpatialGrid[] speciesGrid;
 	
 	/**
 	 * Number of grid elements in the x direction
@@ -964,8 +962,6 @@ public class AgentContainer
 	 */
 	public void writeGrids(Simulator aSim, ResultFile bufferState,
 			ResultFile bufferSum) throws Exception {
-		LocatedAgent aLoc;
-
 		//sonia:chemostat
 		//I've modified the refreshElement() method for the chemostat case
 
@@ -979,23 +975,30 @@ public class AgentContainer
 
 		// Set existing grid to zero
 		for (int iSpecies = 0; iSpecies < aSim.speciesList.size(); iSpecies++)
-			_speciesGrid[iSpecies].setAllValueAt(0);
+			speciesGrid[iSpecies].setAllValueAt(0);
 
 		// Sum biomass concentrations
-		for (SpecialisedAgent anA : agentList) {
-			if (anA instanceof LocatedAgent) {
-				aLoc = (LocatedAgent) anA;
-				aLoc.fitMassOnGrid(_speciesGrid[aLoc.speciesIndex]);
-
-			}
-		}
+        fitSpeciesMassOnGrids();
 
 		// now output the biomass values
 		for (int iSpecies = 0; iSpecies < aSim.speciesList.size(); iSpecies++) 
 		{
-			_speciesGrid[iSpecies].writeReport(bufferState, bufferSum);
+			speciesGrid[iSpecies].writeReport(bufferState, bufferSum);
 		}
 	}
+
+    public void fitSpeciesMassOnGrids()
+    {
+        for (SpecialisedAgent anA : agentList)
+        {
+            if (anA instanceof LocatedAgent)
+            {
+                LocatedAgent aLoc = (LocatedAgent) anA;
+                aLoc.fitMassOnGrid(speciesGrid[aLoc.speciesIndex]);
+
+            }
+        }
+    }
 
 	/**
 	 * \brief Write simulation output to XML files, summarising information for each species and plasmid on the agent grid
@@ -1646,11 +1649,11 @@ public class AgentContainer
 	public void createOutputGrid(Simulator aSim) 
 	{
 		_erosionGrid = new double[_nI + 2][_nJ + 2][_nK + 2];
-		_speciesGrid = new SpatialGrid[aSim.speciesList.size()];
+		speciesGrid = new SpatialGrid[aSim.speciesList.size()];
 		
 		// Create a grid for each species in the simulation
 		for (int iSpecies = 0; iSpecies < aSim.speciesDic.size(); iSpecies++)
-			_speciesGrid[iSpecies]=domain.createGrid(aSim.speciesDic.get(iSpecies), 0);
+			speciesGrid[iSpecies]=domain.createGrid(aSim.speciesDic.get(iSpecies), 0);
 	}
 
 	/* _____________________ EROSION & DETACHMENT ___________________________ */

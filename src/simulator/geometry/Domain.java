@@ -17,6 +17,7 @@ import java.util.*;
 import simulator.*;
 import simulator.geometry.boundaryConditions.*;
 import simulator.agent.LocatedGroup;
+import simulator.agent.Species;
 
 /**
  * \brief Define the computation domain: an evenly spaced rectilinear grid described by its dimensionality (2D or 3D)
@@ -466,6 +467,7 @@ public class Domain implements IsComputationDomain
 	 */
 	public void calculateComputationDomainGrids()
 	{
+        currentSim.agentGrid.fitSpeciesMassOnGrids();
 		for (int i = 1; i<_nI+1; i++) 
 		{
 			for (int j = 1; j<_nJ+1; j++) 
@@ -475,7 +477,20 @@ public class Domain implements IsComputationDomain
 					if (_biomassGrid.grid[i][j][k]>0) {
 						// if this is biomass,
 						_boundaryLayer.grid[i][j][k] = 1.0d;
-						_diffusivityGrid.grid[i][j][k] = _biofilmDiffusivity;
+                        for(Species s : currentSim.speciesList)
+                        {
+                            if(s.diffusivity != Double.NaN)
+                            {
+                                if(currentSim.agentGrid.speciesGrid[s.speciesIndex].grid[i][j][k] > 0)
+                                {
+                                    _diffusivityGrid.grid[i][j][k] = s.diffusivity;
+                                }
+                            }
+                            else
+                            {
+                                _diffusivityGrid.grid[i][j][k] = _biofilmDiffusivity;
+                            }
+                        }
 					} else {
 						// if liquid, check dilation sphere for biomass
 						// (checkDilationRadius will set the value to 1 if it is
