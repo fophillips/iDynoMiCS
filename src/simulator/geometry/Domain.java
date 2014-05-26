@@ -479,12 +479,10 @@ public class Domain implements IsComputationDomain
 						_boundaryLayer.grid[i][j][k] = 1.0d;
                         for(Species s : currentSim.speciesList)
                         {
-                            if(s.diffusivity != Double.NaN)
+                            if(s.diffusivity != Double.NaN &&
+                                    currentSim.agentGrid.speciesGrid[s.speciesIndex].grid[i][j][k] > 0)
                             {
-                                if(currentSim.agentGrid.speciesGrid[s.speciesIndex].grid[i][j][k] > 0)
-                                {
-                                    _diffusivityGrid.grid[i][j][k] = s.diffusivity;
-                                }
+                                _diffusivityGrid.grid[i][j][k] = s.diffusivity;
                             }
                             else
                             {
