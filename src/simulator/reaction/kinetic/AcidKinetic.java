@@ -8,18 +8,12 @@ import utils.XMLParser;
  * Date: 01/07/2014
  * Time: 11:42
  *
- *
- * (52) Ea = 47500 ± 2690(J mol−1 )
- * kˆH+ =588±558(molm−2 s−1)
- * nH+ =1.16±0.107
- * kˆOH− =0.0822±0.079(molm−2 s−1)
- * nOH− =0.16±0.0309
  * @author Fred Phillips
  */
 public class AcidKinetic extends IsKineticFactor
 {
 	/**
-	 * Terature
+	 * Temperature
 	 */
 	private Double _T;
 	/**
@@ -46,11 +40,12 @@ public class AcidKinetic extends IsKineticFactor
 	 * Gas constant
 	 */
 	private Double _R = 8.314; // J K−1 mol−1
+
 	@Override
 	public void init(Element defMarkUp)
 	{
 		_T = (new XMLParser(defMarkUp)).getParamDbl("T");
-		_kH =  (new XMLParser(defMarkUp)).getParamDbl("kH");
+		_kH = (new XMLParser(defMarkUp)).getParamDbl("kH");
 		_nH = (new XMLParser(defMarkUp)).getParamDbl("nH");
 		_kOH = (new XMLParser(defMarkUp)).getParamDbl("kOH");
 		_nOH = (new XMLParser(defMarkUp)).getParamDbl("nOH");
@@ -62,7 +57,7 @@ public class AcidKinetic extends IsKineticFactor
 	public void initFromAgent(Element defMarkUp, double[] kineticParam, int paramIndex)
 	{
 		kineticParam[paramIndex] = (new XMLParser(defMarkUp)).getParamDbl("T");
-		kineticParam[paramIndex+1] =  (new XMLParser(defMarkUp)).getParamDbl("kH");
+		kineticParam[paramIndex+1] = (new XMLParser(defMarkUp)).getParamDbl("kH");
 		kineticParam[paramIndex+2] = (new XMLParser(defMarkUp)).getParamDbl("nH");
 		kineticParam[paramIndex+3] = (new XMLParser(defMarkUp)).getParamDbl("kOH");
 		kineticParam[paramIndex+4] = (new XMLParser(defMarkUp)).getParamDbl("nOH");
