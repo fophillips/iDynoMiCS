@@ -72,16 +72,13 @@ public class AcidKinetic extends IsKineticFactor
 	@Override
 	public double kineticValue(double solute)
 	{
-		return (_kH * Math.pow(solute, -_nH) + _kOH * Math.pow(solute, _nOH) * Math.pow(10, -14 * _nOH))
-				* Math.exp(-_Ea/(_R * _T));
+		return rate(solute, _kH, _nH, _kOH, _nOH, _Ea, _T);
 	}
 
 	@Override
 	public double kineticDiff(double solute)
 	{
-		return (-_nH * _kH * Math.pow(solute, -_nH - 1)
-				+ _nOH * _kOH * Math.pow(solute, _nOH-1) * Math.pow(10, -14 * _nOH))
-				* Math.exp(-_Ea/(_R * _T));
+		return diffRate(solute, _kH, _nH, _kOH, _nOH, _Ea, _T);
 	}
 
 	@Override
@@ -94,8 +91,7 @@ public class AcidKinetic extends IsKineticFactor
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
 		
-		return (kH * Math.pow(solute, -nH) + kOH * Math.pow(solute, nOH) * Math.pow(10, -14 * nOH))
-				* Math.exp(-Ea/(_R * T));
+		return rate(solute, kH, nH, kOH, nOH, Ea, T);
 	}
 
 	@Override
@@ -108,8 +104,19 @@ public class AcidKinetic extends IsKineticFactor
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
 		
-		return (-nH * kH * Math.pow(solute, -nH - 1)
-				+ nOH * kOH * Math.pow(solute, nOH-1) * Math.pow(10, -14 * nOH))
+		return diffRate(solute, kH, nH, kOH, nOH, Ea, T);
+	}
+
+	private Double rate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double T)
+	{
+		return (kH * Math.pow(solute, nH) + kOH * Math.pow(solute, -nOH) * Math.pow(10, -14 * nOH))
+				* Math.exp(-Ea/(_R * T));
+	}
+
+	private Double diffRate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double T)
+	{
+		return (nH * kH * Math.pow(solute, nH - 1)
+				- nOH * kOH * Math.pow(solute, -nOH - 1) * Math.pow(10, -14 * nOH))
 				* Math.exp(-Ea/(_R * T));
 	}
 }
