@@ -19,9 +19,9 @@ import utils.XMLParser;
 public class AcidKinetic extends IsKineticFactor
 {
 	/**
-	 * Temperature
+	 * Terature
 	 */
-	private Double _temp;
+	private Double _T;
 	/**
 	* Rate constant for proton-promoted dissolution
 	*/
@@ -49,7 +49,7 @@ public class AcidKinetic extends IsKineticFactor
 	@Override
 	public void init(Element defMarkUp)
 	{
-		_temp = (new XMLParser(defMarkUp)).getParamDbl("temp");
+		_T = (new XMLParser(defMarkUp)).getParamDbl("T");
 		_kH =  (new XMLParser(defMarkUp)).getParamDbl("kH");
 		_nH = (new XMLParser(defMarkUp)).getParamDbl("nH");
 		_kOH = (new XMLParser(defMarkUp)).getParamDbl("kOH");
@@ -61,7 +61,7 @@ public class AcidKinetic extends IsKineticFactor
 	@Override
 	public void initFromAgent(Element defMarkUp, double[] kineticParam, int paramIndex)
 	{
-		kineticParam[paramIndex] = (new XMLParser(defMarkUp)).getParamDbl("temp");
+		kineticParam[paramIndex] = (new XMLParser(defMarkUp)).getParamDbl("T");
 		kineticParam[paramIndex+1] =  (new XMLParser(defMarkUp)).getParamDbl("kH");
 		kineticParam[paramIndex+2] = (new XMLParser(defMarkUp)).getParamDbl("nH");
 		kineticParam[paramIndex+3] = (new XMLParser(defMarkUp)).getParamDbl("kOH");
@@ -73,7 +73,7 @@ public class AcidKinetic extends IsKineticFactor
 	public double kineticValue(double solute)
 	{
 		return (_kH * Math.pow(solute, -_nH) + _kOH * Math.pow(solute, _nOH) * Math.pow(10, -14 * _nOH))
-				* Math.exp(-_Ea/(_R * _temp));
+				* Math.exp(-_Ea/(_R * _T));
 	}
 
 	@Override
@@ -81,13 +81,13 @@ public class AcidKinetic extends IsKineticFactor
 	{
 		return (-_nH * _kH * Math.pow(solute, -_nH - 1)
 				+ _nOH * _kOH * Math.pow(solute, _nOH-1) * Math.pow(10, -14 * _nOH))
-				* Math.exp(-_Ea/(_R * _temp));
+				* Math.exp(-_Ea/(_R * _T));
 	}
 
 	@Override
 	public double kineticValue(double solute, double[] paramTable, int index)
 	{
-		Double temp = paramTable[index];
+		Double T = paramTable[index];
 		Double kH = paramTable[index+1]; 
 		Double nH = paramTable[index+2];
 		Double kOH = paramTable[index+3];
@@ -95,13 +95,13 @@ public class AcidKinetic extends IsKineticFactor
 		Double Ea = paramTable[index+5];
 		
 		return (kH * Math.pow(solute, -nH) + kOH * Math.pow(solute, nOH) * Math.pow(10, -14 * nOH))
-				* Math.exp(-Ea/(_R * temp));
+				* Math.exp(-Ea/(_R * T));
 	}
 
 	@Override
 	public double kineticDiff(double solute, double[] paramTable, int index)
 	{
-		Double temp = paramTable[index];
+		Double T = paramTable[index];
 		Double kH = paramTable[index+1]; 
 		Double nH = paramTable[index+2];
 		Double kOH = paramTable[index+3];
@@ -110,7 +110,7 @@ public class AcidKinetic extends IsKineticFactor
 		
 		return (-nH * kH * Math.pow(solute, -nH - 1)
 				+ nOH * kOH * Math.pow(solute, nOH-1) * Math.pow(10, -14 * nOH))
-				* Math.exp(-Ea/(_R * temp));
+				* Math.exp(-Ea/(_R * T));
 	}
 }
 
