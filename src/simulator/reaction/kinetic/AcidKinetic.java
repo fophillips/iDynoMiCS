@@ -37,9 +37,17 @@ public class AcidKinetic extends IsKineticFactor
 	 */
 	private Double _Ea;
 	/**
+	 * Molar mass
+	 */
+	private Double _molMass;
+	/**
 	 * Gas constant
 	 */
-	private Double _R = 8.314; // J K−1 mol−1
+	private static Double _R = 8.314; // J K−1 mol−1
+	/**
+	 * The standard amount concentration for calculating the activity
+	 */
+	private static Double _standardConc = 1.0; // mol L-1
 
 	@Override
 	public void init(Element defMarkUp)
@@ -50,7 +58,8 @@ public class AcidKinetic extends IsKineticFactor
 		_kOH = (new XMLParser(defMarkUp)).getParamDbl("kOH");
 		_nOH = (new XMLParser(defMarkUp)).getParamDbl("nOH");
 		_Ea = (new XMLParser(defMarkUp)).getParamDbl("Ea");
-		nParam = 6;
+		_molMass = (new XMLParser(defMarkUp)).getParamDbl("molMass");
+		nParam = 7;
 	}
 
 	@Override
@@ -62,18 +71,20 @@ public class AcidKinetic extends IsKineticFactor
 		kineticParam[paramIndex+3] = (new XMLParser(defMarkUp)).getParamDbl("kOH");
 		kineticParam[paramIndex+4] = (new XMLParser(defMarkUp)).getParamDbl("nOH");
 		kineticParam[paramIndex+5] = (new XMLParser(defMarkUp)).getParamDbl("Ea");
+		kineticParam[paramIndex+6] = (new XMLParser(defMarkUp)).getParamDbl("molMass");
+		nParam = 7;
 	}
 
 	@Override
 	public double kineticValue(double solute)
 	{
-		return rate(solute, _kH, _nH, _kOH, _nOH, _Ea, _T);
+		return rate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
 	}
 
 	@Override
 	public double kineticDiff(double solute)
 	{
-		return diffRate(solute, _kH, _nH, _kOH, _nOH, _Ea, _T);
+		return diffRate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
 	}
 
 	@Override
@@ -85,8 +96,9 @@ public class AcidKinetic extends IsKineticFactor
 		Double kOH = paramTable[index+3];
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
+		Double molMass = paramTable[index+6];
 		
-		return rate(solute, kH, nH, kOH, nOH, Ea, T);
+		return rate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
 	}
 
 	@Override
@@ -98,21 +110,30 @@ public class AcidKinetic extends IsKineticFactor
 		Double kOH = paramTable[index+3];
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
+		Double molMass = paramTable[index+6];
 		
-		return diffRate(solute, kH, nH, kOH, nOH, Ea, T);
+		return diffRate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
 	}
 
-	private Double rate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double T)
+	private Double rate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double molMass, Double T)
 	{
-		return (kH * Math.pow(solute, nH) + kOH * Math.pow(solute, -nOH) * Math.pow(10, -14 * nOH))
+		Double hPlus = hPlusConc(solute, molMass);
+		return (kH * Math.pow(hPlus, nH) + kOH * Math.pow(hPlus, -nOH) * Math.pow(10, -14 * nOH))
 				* Math.exp(-Ea/(_R * T));
 	}
 
-	private Double diffRate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double T)
+	private Double diffRate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double molMass, Double T)
 	{
-		return (nH * kH * Math.pow(solute, nH - 1)
-				- nOH * kOH * Math.pow(solute, -nOH - 1) * Math.pow(10, -14 * nOH))
+		Double hPlus = hPlusConc(solute, molMass);
+
+		return (kH * nH * Math.pow(hPlus, nH-1)
+				- kOH * nOH * Math.pow(hPlus, -nOH - 1) * Math.pow(10,-14 * nOH))
 				* Math.exp(-Ea/(_R * T));
+	}
+
+	private Double hPlusConc(Double solute, Double molMass)
+	{
+		return solute / (molMass * _standardConc);
 	}
 }
 
