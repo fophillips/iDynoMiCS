@@ -491,8 +491,11 @@ public abstract class Reaction implements Serializable
 					for (int iGrid : _mySoluteIndex) {
 						reacGrid[iGrid].grid[i][j][k] += _uptakeRate[iGrid];
 						diffReacGrid[iGrid].grid[i][j][k] += _diffUptakeRate[iGrid];
-						if (Double.isNaN(reacGrid[iGrid].grid[i][j][k])) 
-							LogFile.writeLog("Warning: NaN generated in Reaction");
+						if (Double.isNaN(reacGrid[iGrid].grid[i][j][k]))
+						{
+							LogFile.writeLog("Warning: NaN generated in " + reactionName);
+							System.exit(1);
+						}
 					}
 
 				}
