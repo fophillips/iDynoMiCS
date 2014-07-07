@@ -1,6 +1,7 @@
 package simulator.reaction.kinetic;
 
 import org.jdom.Element;
+import utils.LogFile;
 import utils.XMLParser;
 
 /**
@@ -78,13 +79,15 @@ public class AcidKinetic extends IsKineticFactor
 	@Override
 	public double kineticValue(double solute)
 	{
-		return rate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
+		Double r = rate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
+		return r;
 	}
 
 	@Override
 	public double kineticDiff(double solute)
 	{
-		return diffRate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
+		Double dR = diffRate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
+		return dR;
 	}
 
 	@Override
@@ -97,8 +100,10 @@ public class AcidKinetic extends IsKineticFactor
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
 		Double molMass = paramTable[index+6];
-		
-		return rate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
+
+		Double r = rate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
+
+		return r;
 	}
 
 	@Override
@@ -111,24 +116,43 @@ public class AcidKinetic extends IsKineticFactor
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
 		Double molMass = paramTable[index+6];
-		
-		return diffRate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
+
+		Double dR = diffRate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
+
+		return dR;
 	}
 
 	private Double rate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double molMass, Double T)
 	{
 		Double hPlus = hPlusConc(solute, molMass);
-		return (kH * Math.pow(hPlus, nH) + kOH * Math.pow(hPlus, -nOH) * Math.pow(10, -14 * nOH))
-				* Math.exp(-Ea/(_R * T));
+		Double rate;
+		if(solute > 0)
+		{
+			rate = (kH * Math.pow(hPlus, nH) + kOH * Math.pow(hPlus, -nOH) * Math.pow(10, -14 * nOH))
+					* Math.exp(-Ea/(_R * T));
+ 		}
+		else
+		{
+			rate = 0.0;
+		}
+		return rate;
 	}
 
 	private Double diffRate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double molMass, Double T)
 	{
 		Double hPlus = hPlusConc(solute, molMass);
-
-		return (kH * nH * Math.pow(hPlus, nH-1)
-				- kOH * nOH * Math.pow(hPlus, -nOH - 1) * Math.pow(10,-14 * nOH))
-				* Math.exp(-Ea/(_R * T));
+		Double dR;
+		if(solute > 0)
+		{
+			dR = (kH * nH * Math.pow(hPlus, nH-1)
+					- kOH * nOH * Math.pow(hPlus, -nOH - 1) * Math.pow(10,-14 * nOH))
+					* Math.exp(-Ea/(_R * T));
+		}
+		else
+		{
+			dR = 0.0;
+		}
+		return dR;
 	}
 
 	private Double hPlusConc(Double solute, Double molMass)
