@@ -38,9 +38,13 @@ public class AcidKinetic extends IsKineticFactor
 	 */
 	private Double _Ea;
 	/**
-	 * Molar mass
+	 * Acid molar mass
 	 */
-	private Double _molMass;
+	private Double _acidMolarMass;
+	/**
+	 * Iron molar mass
+	 */
+	private Double _ironMolarMass;
 	/**
 	 * Gas constant
 	 */
@@ -59,8 +63,9 @@ public class AcidKinetic extends IsKineticFactor
 		_kOH = (new XMLParser(defMarkUp)).getParamDbl("kOH");
 		_nOH = (new XMLParser(defMarkUp)).getParamDbl("nOH");
 		_Ea = (new XMLParser(defMarkUp)).getParamDbl("Ea");
-		_molMass = (new XMLParser(defMarkUp)).getParamDbl("molMass");
-		nParam = 7;
+		_acidMolarMass = (new XMLParser(defMarkUp)).getParamDbl("acidMolarMass");
+		_ironMolarMass = (new XMLParser(defMarkUp)).getParamDbl("ironMolarMass");
+		nParam = 8;
 	}
 
 	@Override
@@ -72,21 +77,22 @@ public class AcidKinetic extends IsKineticFactor
 		kineticParam[paramIndex+3] = (new XMLParser(defMarkUp)).getParamDbl("kOH");
 		kineticParam[paramIndex+4] = (new XMLParser(defMarkUp)).getParamDbl("nOH");
 		kineticParam[paramIndex+5] = (new XMLParser(defMarkUp)).getParamDbl("Ea");
-		kineticParam[paramIndex+6] = (new XMLParser(defMarkUp)).getParamDbl("molMass");
-		nParam = 7;
+		kineticParam[paramIndex+6] = (new XMLParser(defMarkUp)).getParamDbl("acidMolarMass");
+		kineticParam[paramIndex+7] = (new XMLParser(defMarkUp)).getParamDbl("ironMolarMass");
+		nParam = 8;
 	}
 
 	@Override
 	public double kineticValue(double solute)
 	{
-		Double r = rate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
+		Double r = rate(solute, _kH, _nH, _kOH, _nOH, _Ea, _acidMolarMass, _ironMolarMass, _T);
 		return r;
 	}
 
 	@Override
 	public double kineticDiff(double solute)
 	{
-		Double dR = diffRate(solute, _kH, _nH, _kOH, _nOH, _Ea, _molMass, _T);
+		Double dR = diffRate(solute, _kH, _nH, _kOH, _nOH, _Ea, _acidMolarMass, _ironMolarMass, _T);
 		return dR;
 	}
 
@@ -99,9 +105,10 @@ public class AcidKinetic extends IsKineticFactor
 		Double kOH = paramTable[index+3];
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
-		Double molMass = paramTable[index+6];
+		Double acidMolarMass = paramTable[index+6];
+		Double ironMolarMass = paramTable[index+7];
 
-		Double r = rate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
+		Double r = rate(solute, kH, nH, kOH, nOH, Ea, acidMolarMass, ironMolarMass, T);
 
 		return r;
 	}
@@ -115,21 +122,24 @@ public class AcidKinetic extends IsKineticFactor
 		Double kOH = paramTable[index+3];
 		Double nOH = paramTable[index+4];
 		Double Ea = paramTable[index+5];
-		Double molMass = paramTable[index+6];
+		Double acidMolarMass = paramTable[index+6];
+		Double ironMolarMass = paramTable[index+7];
 
-		Double dR = diffRate(solute, kH, nH, kOH, nOH, Ea, molMass, T);
+		Double dR = diffRate(solute, kH, nH, kOH, nOH, Ea, acidMolarMass, ironMolarMass, T);
 
 		return dR;
 	}
 
-	private Double rate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double molMass, Double T)
+	private Double rate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea,
+						Double acidMolarMass, Double ironMolarMass, Double T)
 	{
-		Double hPlus = hPlusConc(solute, molMass);
+		Double hPlus = hPlusConc(solute, acidMolarMass);
 		Double rate;
 		if(solute > 0)
 		{
 			rate = (kH * Math.pow(hPlus, nH) + kOH * Math.pow(hPlus, -nOH) * Math.pow(10, -14 * nOH))
-					* Math.exp(-Ea/(_R * T));
+					* Math.exp(-Ea/(_R * T))
+					* ironMolarMass;
  		}
 		else
 		{
@@ -138,15 +148,17 @@ public class AcidKinetic extends IsKineticFactor
 		return rate;
 	}
 
-	private Double diffRate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea, Double molMass, Double T)
+	private Double diffRate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea,
+							Double acidMolarMass, Double ironMolarMass, Double T)
 	{
-		Double hPlus = hPlusConc(solute, molMass);
+		Double hPlus = hPlusConc(solute, acidMolarMass);
 		Double dR;
 		if(solute > 0)
 		{
 			dR = (kH * nH * Math.pow(hPlus, nH-1)
 					- kOH * nOH * Math.pow(hPlus, -nOH - 1) * Math.pow(10,-14 * nOH))
-					* Math.exp(-Ea/(_R * T));
+					* Math.exp(-Ea/(_R * T))
+					/ acidMolarMass;
 		}
 		else
 		{
@@ -155,9 +167,9 @@ public class AcidKinetic extends IsKineticFactor
 		return dR;
 	}
 
-	private Double hPlusConc(Double solute, Double molMass)
+	private Double hPlusConc(Double solute, Double acidMolarMass)
 	{
-		return solute / (molMass * _standardConc);
+		return solute / (acidMolarMass * _standardConc);
 	}
 }
 

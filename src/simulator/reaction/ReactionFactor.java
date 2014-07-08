@@ -52,7 +52,7 @@ public class ReactionFactor extends Reaction
 	/**
 	 * A list of the solutes responsible for each kinetic factor. I.e. the solutes which affect this reaction. 
 	 * */
-	private int[]             _soluteFactor;
+	protected int[]             _soluteFactor;
 
 	// Temporary variables
 	/**
@@ -73,7 +73,7 @@ public class ReactionFactor extends Reaction
 	/**
 	 * Used to calculate diff uptake rate of solute
 	 */
-	private double[]		  marginalDiffMu;
+	protected double[]		  marginalDiffMu;
 	
 	/**
 	 * Holds the unit of the parameter declared in the XML protocol file
