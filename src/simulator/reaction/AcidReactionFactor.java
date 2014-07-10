@@ -20,7 +20,7 @@ public class AcidReactionFactor extends ReactionFactor
 	public void init(Simulator aSim, XMLParser xmlRoot)
 	{
 		super.init(aSim, xmlRoot);
-		_surfaceArea = Math.pow(aSim.soluteList[0].getResolution(), 2);
+		_surfaceArea = Math.pow(aSim.soluteList[0].getResolution(), 2) * 1e-12;
 	}
 	@Override
 	public void computeUptakeRate(double[] s, double mass, double t)
