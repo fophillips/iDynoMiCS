@@ -133,10 +133,10 @@ public class AcidKinetic extends IsKineticFactor
 	private Double rate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea,
 						Double acidMolarMass, Double ironMolarMass, Double T)
 	{
-		Double hPlus = hPlusConc(solute, acidMolarMass);
 		Double rate;
 		if(solute > 0)
 		{
+			Double hPlus = hPlusConc(solute, acidMolarMass);
 			rate = (kH * Math.pow(hPlus, nH) + kOH * Math.pow(hPlus, -nOH) * Math.pow(10, -14 * nOH))
 					* Math.exp(-Ea/(_R * T))
 					* ironMolarMass;
@@ -151,14 +151,14 @@ public class AcidKinetic extends IsKineticFactor
 	private Double diffRate(Double solute, Double kH, Double nH, Double kOH, Double nOH, Double Ea,
 							Double acidMolarMass, Double ironMolarMass, Double T)
 	{
-		Double hPlus = hPlusConc(solute, acidMolarMass);
 		Double dR;
 		if(solute > 0)
 		{
+			Double hPlus = hPlusConc(solute, acidMolarMass);
 			dR = (kH * nH * Math.pow(hPlus, nH-1)
 					- kOH * nOH * Math.pow(hPlus, -nOH - 1) * Math.pow(10,-14 * nOH))
 					* Math.exp(-Ea/(_R * T))
-					/ acidMolarMass;
+					* ironMolarMass;
 		}
 		else
 		{
@@ -169,7 +169,7 @@ public class AcidKinetic extends IsKineticFactor
 
 	private Double hPlusConc(Double solute, Double acidMolarMass)
 	{
-		return solute / (acidMolarMass * _standardConc);
+		return solute / (acidMolarMass * _standardConc) + 10e-7;
 	}
 }
 
