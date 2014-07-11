@@ -64,9 +64,9 @@ public class AcidKinetic extends IsKineticFactor
 		kineticParam[paramIndex]   = (new XMLParser(defMarkUp)).getParamDbl("T");
 		kineticParam[paramIndex+1] = (new XMLParser(defMarkUp)).getParamDbl("kH");
 		kineticParam[paramIndex+2] = (new XMLParser(defMarkUp)).getParamDbl("nH");
-		kineticParam[paramIndex+5] = (new XMLParser(defMarkUp)).getParamDbl("Ea");
-		kineticParam[paramIndex+6] = (new XMLParser(defMarkUp)).getParamDbl("acidMolarMass");
-		kineticParam[paramIndex+7] = (new XMLParser(defMarkUp)).getParamDbl("ironMolarMass");
+		kineticParam[paramIndex+3] = (new XMLParser(defMarkUp)).getParamDbl("Ea");
+		kineticParam[paramIndex+4] = (new XMLParser(defMarkUp)).getParamDbl("acidMolarMass");
+		kineticParam[paramIndex+51] = (new XMLParser(defMarkUp)).getParamDbl("ironMolarMass");
 		nParam = 6;
 	}
 
@@ -90,9 +90,9 @@ public class AcidKinetic extends IsKineticFactor
 		Double T  = paramTable[index];
 		Double kH = paramTable[index+1]; 
 		Double nH = paramTable[index+2];
-		Double Ea = paramTable[index+5];
-		Double acidMolarMass = paramTable[index+6];
-		Double ironMolarMass = paramTable[index+7];
+		Double Ea = paramTable[index+3];
+		Double acidMolarMass = paramTable[index+4];
+		Double ironMolarMass = paramTable[index+5];
 
 		Double r = rate(solute, kH, nH, Ea, acidMolarMass, ironMolarMass, T);
 
@@ -105,9 +105,9 @@ public class AcidKinetic extends IsKineticFactor
 		Double T  = paramTable[index];
 		Double kH = paramTable[index+1]; 
 		Double nH = paramTable[index+2];
-		Double Ea = paramTable[index+5];
-		Double acidMolarMass = paramTable[index+6];
-		Double ironMolarMass = paramTable[index+7];
+		Double Ea = paramTable[index+3];
+		Double acidMolarMass = paramTable[index+4];
+		Double ironMolarMass = paramTable[index+5];
 
 		Double dR = diffRate(solute, kH, nH, Ea, acidMolarMass, ironMolarMass, T);
 
