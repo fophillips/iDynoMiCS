@@ -27,14 +27,14 @@ public class AcidReactionFactor extends ReactionFactor
 	{
 		super.computeSpecificGrowthRate(s);
 		for (int iSolute : _mySoluteIndex) {
-			_uptakeRate[iSolute] = _surfaceArea * _specRate*_soluteYield[iSolute];
+			_uptakeRate[iSolute] = _surfaceArea * _specRate * _soluteYield[iSolute];
 		}
 
 		int iSolute;
 		for (int i = 0; i<_soluteFactor.length; i++) {
 			iSolute = _soluteFactor[i];
 			if(iSolute!=-1)
-				_diffUptakeRate[iSolute] = _surfaceArea * marginalDiffMu[i]*_soluteYield[iSolute];
+				_diffUptakeRate[iSolute] = _surfaceArea * marginalDiffMu[i] * _soluteYield[iSolute];
 		}
 	}
 }
