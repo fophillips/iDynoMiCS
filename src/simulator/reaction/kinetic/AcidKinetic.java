@@ -66,7 +66,7 @@ public class AcidKinetic extends IsKineticFactor
 		kineticParam[paramIndex+2] = (new XMLParser(defMarkUp)).getParamDbl("nH");
 		kineticParam[paramIndex+3] = (new XMLParser(defMarkUp)).getParamDbl("Ea");
 		kineticParam[paramIndex+4] = (new XMLParser(defMarkUp)).getParamDbl("acidMolarMass");
-		kineticParam[paramIndex+51] = (new XMLParser(defMarkUp)).getParamDbl("ironMolarMass");
+		kineticParam[paramIndex+5] = (new XMLParser(defMarkUp)).getParamDbl("ironMolarMass");
 		nParam = 6;
 	}
 
